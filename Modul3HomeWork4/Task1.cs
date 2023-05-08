@@ -4,13 +4,13 @@
     {
         public Task1()
         {
-            ListSumHelper += (x, y) => TryCatch(Sum, x, y);
-            ListSumHelper += (x, y) => TryCatch(Sum, x, y);
+            ListSumHandler += (x, y) => TryCatch(Sum, x, y);
+            ListSumHandler += (x, y) => TryCatch(Sum, x, y);
         }
 
-        public delegate int SumHelper(int x, int y);
+        public delegate int SumHandler(int x, int y);
 
-        public event SumHelper ListSumHelper;
+        public event SumHandler ListSumHandler;
 
         public static int Sum(int x, int y) => x + y;
 
@@ -26,5 +26,7 @@
                 return 0;
             }
         }
+
+        public int GetSum(int first, int second) => ListSumHandler(first, second);
     }
 }
