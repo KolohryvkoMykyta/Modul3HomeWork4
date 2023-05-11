@@ -4,21 +4,26 @@
     {
         public Task1()
         {
-            ListSumHandler += (x, y) => TryCatch(Sum, x, y);
-            ListSumHandler += (x, y) => TryCatch(Sum, x, y);
+            ListSumHandler += Sum;
+            ListSumHandler += Sum;
         }
 
         public delegate int SumHandler(int x, int y);
 
         public event SumHandler ListSumHandler;
 
-        public static int Sum(int x, int y) => x + y;
-
-        public int TryCatch(Func<int, int, int> func, int first, int second)
+        public int GetSumResults(int first, int second)
         {
             try
             {
-                var result = func(first, second);
+                int result = 0;
+                var array = ListSumHandlerResults(first, second);
+
+                foreach (var item in array)
+                {
+                    result += item;
+                }
+
                 return result;
             }
             catch (Exception)
@@ -27,6 +32,24 @@
             }
         }
 
-        public int GetSum(int first, int second) => ListSumHandler(first, second);
+        private List<int> ListSumHandlerResults(int first, int second)
+        {
+            var result = new List<int>();
+
+            if (ListSumHandler != null)
+            {
+                var delegateList = ListSumHandler.GetInvocationList();
+
+                for (int i = 0; i < delegateList.Length; i++)
+                {
+                    var delegat = delegateList[i] as SumHandler;
+                    result.Add(delegat.Invoke(first, second));
+                }
+            }
+
+            return result;
+        }
+
+        private static int Sum(int x, int y) => x + y;
     }
 }
